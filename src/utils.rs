@@ -3,7 +3,7 @@ use std::error::Error;
 use async_std::prelude::*;
 use serde::Serialize;
 use std::marker::Unpin;
-// Error 和 Result 类型
+
 // 这些是通用错误类型。async_std、serde_json 和 tokio 都定义了自己的错误类型，但是它们都实现了标准库的 From，? 运算符可以自动将它们全部转换为 ChatError，
 // 可以将任何合适的错误类型转换为 Box<dyn Error + Send + Sync + 'static>。
 

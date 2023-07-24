@@ -1,17 +1,14 @@
-
-use std::sync::Arc;
 use async_chat::utils::ChatResult;
 use async_chat::utils::{self, receive_as_json};
 use async_chat::{FromClient, FromServer};
-use async_std::{net, task, io};
 use async_std::prelude::*;
-
-
+use async_std::{io, net, task};
+use std::sync::Arc;
 
 // 从命令行获取服务器地址后，main 有一系列要调用的异步函数，因此它将函数的其余部分包装在一个异步块中，并将该块的 future 传递给 async_std::task::block_on 以运行。
 fn main() -> ChatResult<()> {
     let address = std::env::args().nth(1).expect("Usage: client ADDRESS:PORT");
-    task::block_on(async{
+    task::block_on(async {
         let socket = net::TcpStream::connect(address).await?;
         socket.set_nodelay(true)?;
         let to_server = send_commands(socket.clone());
@@ -62,7 +59,6 @@ fn parse_command(line: &str) -> Option<FromClient> {
 }
 
 // 我们聊天客户端的首要职责是读取用户的命令，并将相应的数据包发送到服务器。我们将做最简单可行的事情：直接从标准输入读取行
-
 async fn send_commands(mut to_server: net::TcpStream) -> ChatResult<()> {
     println!("Commands:\n join GROUP\n post GROUP MESSAGE...\n Type Control-D (on Unix) or Control-Z (on Windows) to close the connection.");
     let mut command_lines = io::BufReader::new(io::stdin()).lines();
@@ -95,10 +91,10 @@ async fn handle_replies(from_server: net::TcpStream) -> ChatResult<()> {
                 message,
             } => {
                 println!("message posted to {}: {}", group_name, message);
-            },
+            }
             FromServer::Error(message) => {
-                println!("error from server: {}", message)
-            },
+                println!("error from server: {}", message);
+            }
         }
     }
 
